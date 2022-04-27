@@ -1,10 +1,14 @@
 from codecs import namereplace_errors
 from pyexpat import model
+from typing import List
 from webbrowser import get
+from auth.auth_bearer import JWTBearer
 import requests
+from rsa import sign
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi_sqlalchemy import DBSessionMiddleware, db
+from auth.auth_handler import signJWT
 from schema import Dog as SchemaDog
 from schema import User as SchemaUser
 from models import Dog 
@@ -71,18 +75,23 @@ def delete_dog(name:str):
 
 picture_update= get_dog_picture()
 
-@app.post("/dog/", response_model=SchemaDog)
-def add_dog(dog: SchemaDog):
+@app.post("/dog/", response_model=SchemaDog, dependencies=[Depends(JWTBearer())])
+def add_dog(dog: SchemaDog) :
     admin = Dog(name=dog.name, picture= picture_update , is_adopted= dog.is_adopted, id_user=dog.id_user)
     db.session.add(admin)
     db.session.commit()
     return admin
 
-@app.post("/user/", response_model=SchemaUser)
+@app.post("/user/")
 def add_user(user: SchemaUser):
-    admin = User(name=user.name,last_name=user.last_name, email= user.email )
-    db.session.add(admin)
+    user_created= User(name=user.name,last_name=user.last_name, email= user.email )
+    db.session.add(user_created)
     db.session.commit()
-    return admin
+    return signJWT(user_created.email)
+
+
+
+
+
 
     

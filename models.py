@@ -19,7 +19,7 @@ class Dog(Base):
     create_date = Column(DateTime, server_default=func.now())
     id_user = Column(Integer, ForeignKey("user.id"))
 
-    user = relationship("User")
+    user = relationship("User", uselist=False)
 
 class User(Base):
     __tablename__ = "user" 
