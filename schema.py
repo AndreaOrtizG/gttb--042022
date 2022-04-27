@@ -1,11 +1,12 @@
 from lib2to3.pytree import Base
 from unicodedata import name
 from pydantic import BaseModel
+import requests
+
 
 
 class Dog(BaseModel):
     name: str
-    picture: str
     is_adopted: bool
     id_user: int
 
