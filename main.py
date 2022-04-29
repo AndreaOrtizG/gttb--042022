@@ -14,6 +14,8 @@ from schema import User as SchemaUser
 from models import Dog 
 from models import User 
 from dotenv import load_dotenv
+from celery_worker import sum
+
 import os
 
 def get_dog_picture():
@@ -65,6 +67,16 @@ def update_dogs(name:str, dog:SchemaDog):
     db.session.commit()
     return dog_to_updated
 
+
+@app.put("/users/{name}")
+def update_users(name:str, user:SchemaUser):
+    user_to_updated= db.session.query(User).where(User.name==name).first()
+    user_to_updated.name= user.name
+    user_to_updated.last_name= user.last_name   
+    user_to_updated.email= user.email
+    db.session.commit()
+    return user_to_updated
+
 @app.delete("/dogs/{name}")
 def delete_dog(name:str):
     dog_to_delete=db.session.query(Dog).where(Dog.name==name).first()
@@ -73,11 +85,20 @@ def delete_dog(name:str):
     db.session.commit()
     return dog_to_delete
 
+@app.delete("/users/{name}")
+def delete_user(name:str):
+    user_to_delete=db.session.query(User).where(User.name==name).first()
+    
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    return user_to_delete
+
 picture_update= get_dog_picture()
 
 @app.post("/dog/", response_model=SchemaDog, dependencies=[Depends(JWTBearer())])
 def add_dog(dog: SchemaDog) :
     admin = Dog(name=dog.name, picture= picture_update , is_adopted= dog.is_adopted, id_user=dog.id_user)
+    task = sum.delay(5,2,3)
     db.session.add(admin)
     db.session.commit()
     return admin
