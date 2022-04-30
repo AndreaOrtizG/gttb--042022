@@ -13,22 +13,21 @@ from schemas.dog_schema import Dog as SchemaDog
 from models.dog_model import Dog 
 from dotenv import load_dotenv
 from fastapi import APIRouter
+from services.dog import ServiceDog
 
 router = APIRouter()
 
 @router.get("/")
-def get_dogs():
-    dogs= db.session.query(Dog).all()
-
+def get_all_dogs():
+    dogs= get_dogs()
     if dogs:
         return dogs
     raise HTTPException(status_code=404, detail="Dogs not found")
 
 
 @router.get("/{name}")
-async def get_dogs_name(name: str):
-    dogs_name= db.session.query(Dog).where(Dog.name==name).all()
-
+def get_dogs_name():
+    dogs_name= ServiceDog.get_by_name()
     if dogs_name: 
         return dogs_name
     raise HTTPException(status_code=404, detail="Dog not found")
@@ -36,8 +35,7 @@ async def get_dogs_name(name: str):
 
 @router.get("/is_adopted")
 def get_dogs_adopted():
-    dogs_adopted= db.session.query(Dog).where(Dog.is_adopted == True).all()
-
+    dogs_adopted= ServiceDog.dogs_adopted()
     if dogs_adopted:
         return dogs_adopted
     raise HTTPException(status_code=404, detail="Dogs adopted not found")
@@ -45,23 +43,15 @@ def get_dogs_adopted():
 
 @router.put("/{name}")
 def update_dogs(name:str, dog:SchemaDog):
-    dog_to_updated= db.session.query(Dog).where(Dog.name==name).first()
-    dog_to_updated.name= dog.name
-    dog_to_updated.is_adopted= dog.is_adopted
-    dog_to_updated.id_user= dog.id_user
-    db.session.commit()
-
+    dog_to_updated= ServiceDog.update_dogs(name = name)
     if dog_to_updated:
         return dog_to_updated
     return none
 
 
-
 @router.delete("/{name}")
 def delete_dog(name:str):
-    dog_to_delete=db.session.query(Dog).where(Dog.name==name).first()
-    db.session.delete(dog_to_delete)
-    db.session.commit()
+    dog_to_delete = ServiceDog.delete_dogs(name = name)
     if dog_to_delete:
         return dog_to_delete
     return none
@@ -69,12 +59,10 @@ def delete_dog(name:str):
 
 @router.post("/", response_model=SchemaDog, dependencies=[Depends(JWTBearer())])
 def add_dog(dog: SchemaDog) :
-    dog_created = Dog(name=dog.name, picture= picture_update , is_adopted= dog.is_adopted, id_user=dog.id_user)
-    ##task = sum.delay(5,2,3)
-    db.session.add(dog_created)
-    db.session.commit()
-    return dog_created
-    if admin: 
+    dog_created = ServiceDog.create_dogs()
+    if dog_created:
+        return dog_created
+    return None 
 
 
 
