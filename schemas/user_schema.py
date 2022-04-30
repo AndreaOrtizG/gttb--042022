@@ -8,7 +8,7 @@ import requests
 class User(BaseModel):
     name: str
     last_name: str
-    email: [EmailStr]
+    email: EmailStr
 
     class Config:
         orm_mode= True

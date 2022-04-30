@@ -10,9 +10,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from auth.auth_handler import signJWT
 from schemas.dog_schema import Dog as SchemaDog
-from models.dog_model import Dog 
+from models.models import Dog
 from dotenv import load_dotenv
-
+from services.api_get_random_image import get_dog_picture
 class ServiceDog:
 
     def get_dogs():
@@ -41,7 +41,8 @@ class ServiceDog:
         db.session.commit()
         return dog_to_delete
 
-    def create_dogs(dog: SchemaDog)
+    def create_dogs(dog: SchemaDog):
+        picture_update= get_dog_picture()
         dog_created = Dog(name=dog.name, picture= picture_update , is_adopted= dog.is_adopted, id_user=dog.id_user)
         ##task = sum.delay(5,2,3)
         db.session.add(dog_created)
