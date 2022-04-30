@@ -25,8 +25,8 @@ class ServiceUser:
     def update_users(name:str, user:SchemaUser):
         user_to_updated= db.session.query(User).where(User.name==name).first()
         user_to_updated.name= user.name
-        user_to_updated.is_adopted= user.is_adopted
-        user_to_updated.id_user= user.id_user
+        user_to_updated.last_name= user.last_name
+        user_to_updated.email= user.email
         db.session.commit()
         return user_to_updated
 
@@ -36,7 +36,7 @@ class ServiceUser:
         db.session.commit()
         return user_to_delete
 
-    def create_dogs(user: SchemaUser):
+    def create_users(user: SchemaUser):
         user_created = User(name=user.name,last_name=user.last_name, email= user.email)
         db.session.add(user_created)
         db.session.commit()

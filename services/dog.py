@@ -24,7 +24,7 @@ class ServiceDog:
         return dogs_name
 
     def dogs_adopted(name: str):
-        dogs_adopted= db.session.query(Dog).where(Dog.is_adopted == True).all()
+        dogs_adopted= db.session.query(Dog).where(Dog.is_adopted==True).first()
         return dogs_adopted
 
     def update_dogs(name:str, dog:SchemaDog):
