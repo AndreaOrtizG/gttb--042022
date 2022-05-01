@@ -14,6 +14,7 @@ from auth.auth_handler import signJWT
 from schemas.user_schema import User as SchemaUser
 from models.models import User
 from dotenv import load_dotenv
+from services.upload_file import upload_file
 
 class ServiceUser:
 
@@ -21,6 +22,9 @@ class ServiceUser:
         users= db.session.query(User).all()
         return users
 
+    def upload_file():
+        file_uploaded= upload_file()
+        return file_uploaded
     
     def update_users(name:str, user:SchemaUser):
         user_to_updated= db.session.query(User).where(User.name==name).first()

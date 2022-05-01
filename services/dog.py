@@ -28,6 +28,9 @@ class ServiceDog:
         print(dogs_adopted)
         return dogs_adopted
 
+    
+        
+
     def update_dogs(name:str, dog:SchemaDog):
         dog_to_updated= db.session.query(Dog).where(Dog.name==name).all()
         dog_to_updated.name= dog.name

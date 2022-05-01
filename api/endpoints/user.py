@@ -15,6 +15,7 @@ from fastapi import APIRouter
 from fastapi import APIRouter
 from services.user import ServiceUser
 
+
 router = APIRouter()
 
 
@@ -25,7 +26,12 @@ def get_all_user():
         return users
     raise HTTPException(status_code=404, detail="users not found")
 
-
+@router.get("/upload_file")
+def upload_file():
+    file_upload = ServiceUser.upload_file()
+    if file_upload:
+        return file_upload
+    return None
 
 @router.put("/{name}")
 def update_user(name:str, user:SchemaUser):
@@ -47,7 +53,7 @@ def delete_user(name:str):
 def add_user(user: SchemaUser) :
     user_created = ServiceUser.create_users(user)
     if user_created:
-        return user_created, user_created.id
+        return user_created
     return None 
 
 
