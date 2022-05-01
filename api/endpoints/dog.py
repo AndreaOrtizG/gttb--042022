@@ -23,6 +23,14 @@ def get_all_dogs():
         return dogs
     raise HTTPException(status_code=404, detail="Dogs not found")
 
+@router.get("/is_adopted")
+def get_dogs_adopted():
+    dogs_adopted= ServiceDog.get_dogs_adopted()
+    if dogs_adopted:
+        return dogs_adopted
+    raise HTTPException(status_code=404, detail="Dogs adopted not found")
+
+
 
 @router.get("/{name}")
 def get_dogs_name(name:str):
@@ -32,12 +40,7 @@ def get_dogs_name(name:str):
     raise HTTPException(status_code=404, detail="Dog not found")
 
 
-@router.get("/is_adopted")
-def get_dogs_adopted():
-    dogs_adopted= ServiceDog.dogs_adopted()
-    if dogs_adopted:
-        return dogs_adopted
-    raise HTTPException(status_code=404, detail="Dogs adopted not found")
+
 
 
 @router.put("/{name}")
