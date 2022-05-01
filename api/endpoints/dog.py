@@ -13,6 +13,7 @@ from schemas.dog_schema import Dog as SchemaDog
 from dotenv import load_dotenv
 from fastapi import APIRouter
 from services.dog import ServiceDog
+from celery_worker import task_time
 
 router = APIRouter()
 
@@ -62,7 +63,9 @@ def delete_dog(name:str):
 @router.post("/", response_model=SchemaDog, dependencies=[Depends(JWTBearer())])
 def add_dog(dog: SchemaDog) :
     dog_created = ServiceDog.create_dogs(dog)
+    task = task_time.delay(10)
     if dog_created:
+        print (task)
         return dog_created
     return None 
 

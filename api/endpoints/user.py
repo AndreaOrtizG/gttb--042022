@@ -47,7 +47,7 @@ def delete_user(name:str):
 def add_user(user: SchemaUser) :
     user_created = ServiceUser.create_users(user)
     if user_created:
-        return user_created
+        return user_created, user_created.id
     return None 
 
 
