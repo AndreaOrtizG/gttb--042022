@@ -1,4 +1,5 @@
-from typing import Any, TypeVar
+from typing import TypeVar
+
 from pydantic import BaseModel
 from tortoise.models import Model
 

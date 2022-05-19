@@ -1,9 +1,8 @@
 from fastapi import FastAPI
-import uvicorn
-import asyncpg
+
 from app.api.api import api_router
 from app.core.config_fastapi import Settings
-from app.infra.postgres.config import init_db, generate_schema
+from app.infra.postgres.config import generate_schema, init_db
 
 settings = Settings()
 
@@ -21,11 +20,3 @@ app = create_application()
 async def startup_event():
     init_db(app)
     await generate_schema()
-
-
-
-
-
-
-
-    

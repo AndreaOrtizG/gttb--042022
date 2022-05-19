@@ -1,0 +1,44 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+black = "*"
+pre-commit = "*"
+
+[packages]
+
+asyncpg="*"
+bcrypt="*"
+celery="*"
+cryptography="*"
+DateTime="*"
+email-validator="*"
+fastapi="0.75.2"
+fastapi-router-controller="*"
+flower="*"
+httptools="*"
+passlib="*"
+pydantic="*"
+PyJWT="*"
+pypika-tortoise="*"
+python-decouple="*"
+python-dotenv="*"
+python-jose="*"
+python-multipart="*"
+redis="*"
+requests="*"
+tortoise-orm="*"
+typing-extensions="*"
+uvicorn = "0.17.6"
+watchgod="*"
+websockets="*"
+
+
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

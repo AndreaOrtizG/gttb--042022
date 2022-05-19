@@ -1,15 +1,15 @@
 version: "3.8"
 
-services: 
+services:
 
-  db: 
+  db:
     container_name: db_postgresql
     image: app-db
     restart: always
-    build: 
+    build:
       context: ./db
       dockerfile: Dockerfile
-  
+
     ports:
      - 5432:5432
     environment:
@@ -38,7 +38,7 @@ services:
 
   celery_worker:
     container_name: celery_worker
-    build:  . 
+    build:  .
     command: celery -A app.celery_worker.celery worker --loglevel=info
     volumes:
       - .:/app

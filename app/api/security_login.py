@@ -1,38 +1,32 @@
-
-from jose import jwt
-from pydantic import ValidationError
-from app.infra.postgres.models.user import User
 from fastapi import HTTPException, Security, status
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import APIRouter, HTTPException, Security, status
-from fastapi.security import OAuth2PasswordRequestForm
-from app.services.auth_user import auth_service
-from app.services.user import user_service
-from app.schemas.token import Token
-from app.schemas.user_schema import CreateUser
-from app.core import auth
+from jose import jwt
+from pydantic import ValidationError
+
 from app.core.config_fastapi import Settings, get_settings
-from app.core.config_fastapi import Settings, get_settings
+from app.infra.postgres.models.user import User
 from app.schemas.token import TokenPayload
 from app.services.user import user_service
 
-settings: Settings=get_settings()
+settings: Settings = get_settings()
 
-oauth2_schema= OAuth2PasswordBearer(tokenUrl="/api/users/login")
+oauth2_schema = OAuth2PasswordBearer(tokenUrl="/api/users/login")
 
-async def get_current_user(token:str =Security(oauth2_schema))-> User:
-    
-    try: 
-        payload= jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        data= TokenPayload(**payload)
+
+async def get_current_user(token: str = Security(oauth2_schema)) -> User:
+
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        data = TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-    user= await user_service.find_user_id(id=data.id)
-    if user: 
+    user = await user_service.find_user_id(id=data.id)
+    if user:
         return user
-    raise HTTPException(status_code= 404)
+    raise HTTPException(status_code=404)
 
 
-def get_current_active_user(current_user= Security(get_current_user)):
-        return current_user
-    
+def get_current_active_user(current_user=Security(get_current_user)):
+    return current_user
